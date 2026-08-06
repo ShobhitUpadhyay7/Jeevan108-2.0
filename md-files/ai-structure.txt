@@ -1,0 +1,15 @@
+services/ai-service/
+├── app/
+│   ├── main.py
+│   ├── api/
+│   ├── core/
+│   ├── rag/
+│   ├── kb/
+│   ├── schemas/
+│   └── services/
+├── data/
+│   └── seed_kb/
+├── tests/
+├── Dockerfile
+├── requirements.txt
+└── .env.example

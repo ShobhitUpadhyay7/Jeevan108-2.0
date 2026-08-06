@@ -1,0 +1,81 @@
+jeevan108-backend/
+│
+├── infra/
+│   ├── nginx/
+│   │   ├── nginx.conf
+│   │   └── Dockerfile
+│   │
+│   ├── rabbitmq/
+│   ├── mongo/
+│   ├── redis/
+│   └── minio/
+│
+├── packages/
+│   └── shared/
+│       ├── src/
+│       │   ├── constants/
+│       │   ├── errors/
+│       │   ├── middleware/
+│       │   ├── events/
+│       │   └── utils/
+│       │
+│       └── package.json
+│
+├── services/
+│   │
+│   ├── api-gateway/
+│   │
+│   ├── auth-service/
+│   │   └── src/
+│   │       ├── controllers/
+│   │       ├── routes/
+│   │       ├── services/
+│   │       ├── repositories/
+│   │       ├── models/
+│   │       ├── schemas/
+│   │       └── config/
+│   │
+│   ├── user-service/
+│   │
+│   ├── application-service/
+│   │
+│   ├── professional-service/
+│   │
+│   ├── marketplace-service/
+│   │
+│   ├── booking-service/
+│   │   └── src/
+│   │       ├── controllers/
+│   │       ├── routes/
+│   │       ├── services/
+│   │       ├── repositories/
+│   │       ├── models/
+│   │       ├── schemas/
+│   │       ├── consumers/
+│   │       ├── publishers/
+│   │       └── config/
+│   │
+│   ├── payment-service/
+│   │
+│   ├── notification-service/
+│   │
+│   ├── search-service/
+│   │
+│   └── ai-service/
+│
+├── scripts/
+│   ├── seed/
+│   └── setup/
+│
+├── docs/
+│   ├── architecture.md
+│   ├── api-contract.md
+│   ├── events.md
+│   └── demo-script.md
+│
+├── docker-compose.yml
+├── docker-compose.dev.yml
+├── .env.example
+├── .gitignore
+├── package.json
+└── README.md
