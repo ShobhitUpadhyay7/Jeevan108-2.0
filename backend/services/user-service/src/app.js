@@ -2,7 +2,8 @@ import express from 'express';
 import crypto from 'node:crypto';
 
 import healthRouter from './routes/health.routes.js';
-import authRouter from './routes/auth.routes.js';
+import userRouter from './routes/user.routes.js';
+
 import {
   notFoundMiddleware,
   errorMiddleware
@@ -18,22 +19,11 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    data: {
-      status: 'ok',
-      service: process.env.SERVICE_NAME || 'auth-service',
-      timestamp: new Date().toISOString()
-    },
-    meta: {
-      requestId: req.requestId
-    },
-    error: null
-  });
-});
-
-app.use('/', authRouter);
+// health check
 app.use('/health', healthRouter);
+
+// User Service routes
+app.use('/', userRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);

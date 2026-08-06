@@ -19,7 +19,7 @@ services:
     container_name: jeevan108-api-gateway
     restart: unless-stopped
     env_file:
-    - ./services/api-gateway/.env
+      - ./services/api-gateway/.env
     depends_on:
       redis:
         condition: service_healthy
@@ -38,7 +38,7 @@ services:
     container_name: jeevan108-auth-service
     restart: unless-stopped
     env_file:
-    - ./services/auth-service/.env
+      - ./services/auth-service/.env
     depends_on:
       mongo:
         condition: service_healthy
@@ -54,16 +54,36 @@ services:
       timeout: 5s
       retries: 5
 
+  user-service:
+    build: ./services/user-service
+    container_name: jeevan108-user-service
+    restart: unless-stopped
+    env_file:
+      - ./services/user-service/.env
+    depends_on:
+      mongo:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "4002:4002"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4002/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   mongo:
     image: mongo:7
     container_name: jeevan108-mongo
     restart: unless-stopped
     ports:
-    - "27018:27017"
+      - "27018:27017"
     volumes:
       - mongo_data:/data/db
     healthcheck:
-      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      test:
+        ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -85,6 +105,7 @@ services:
     container_name: jeevan108-rabbitmq
     restart: unless-stopped
     ports:
+      - "5672:5672"
       - "15672:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
