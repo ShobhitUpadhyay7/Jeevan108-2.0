@@ -2,6 +2,7 @@ import express from 'express';
 import crypto from 'node:crypto';
 
 import healthRouter from './routes/health.routes.js';
+import authRouter from './routes/auth.routes.js';
 import {
   notFoundMiddleware,
   errorMiddleware
@@ -31,6 +32,7 @@ app.get('/health', (req, res) => {
   });
 });
 
+app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/auth/health', healthRouter);
 
 app.use(notFoundMiddleware);

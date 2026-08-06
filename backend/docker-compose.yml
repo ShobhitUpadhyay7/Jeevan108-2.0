@@ -18,12 +18,8 @@ services:
       dockerfile: Dockerfile
     container_name: jeevan108-api-gateway
     restart: unless-stopped
-    environment:
-      NODE_ENV: development
-      PORT: 4000
-      SERVICE_NAME: api-gateway
-      AUTH_SERVICE_URL: http://auth-service:4001
-      REDIS_URL: redis://redis:6379
+    env_file:
+    - ./services/api-gateway/.env
     depends_on:
       redis:
         condition: service_healthy
@@ -41,13 +37,8 @@ services:
       dockerfile: Dockerfile
     container_name: jeevan108-auth-service
     restart: unless-stopped
-    environment:
-      NODE_ENV: development
-      PORT: 4001
-      SERVICE_NAME: auth-service
-      MONGO_URL: mongodb://mongo:27017/jeevan108_auth
-      REDIS_URL: redis://redis:6379
-      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+    env_file:
+    - ./services/auth-service/.env
     depends_on:
       mongo:
         condition: service_healthy
@@ -55,6 +46,8 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    ports:
+      - "4001:4001"
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:4001/health"]
       interval: 10s
@@ -65,6 +58,8 @@ services:
     image: mongo:7
     container_name: jeevan108-mongo
     restart: unless-stopped
+    ports:
+    - "27018:27017"
     volumes:
       - mongo_data:/data/db
     healthcheck:

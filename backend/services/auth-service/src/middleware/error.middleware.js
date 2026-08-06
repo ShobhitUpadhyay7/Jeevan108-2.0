@@ -1,9 +1,7 @@
 export function notFoundMiddleware(req, res) {
   res.status(404).json({
     data: null,
-    meta: {
-      requestId: req.requestId
-    },
+    meta: { requestId: req.requestId },
     error: {
       code: 'ROUTE_NOT_FOUND',
       message: `Route ${req.method} ${req.originalUrl} not found`
@@ -15,6 +13,7 @@ export function errorMiddleware(err, req, res, next) {
   const statusCode = err.statusCode || 500;
   const code = err.code || 'INTERNAL_ERROR';
   const message = statusCode === 500 ? 'Internal server error' : err.message;
+  const details = err.details || null;
 
   if (statusCode === 500) {
     console.error(err);
@@ -22,12 +21,11 @@ export function errorMiddleware(err, req, res, next) {
 
   res.status(statusCode).json({
     data: null,
-    meta: {
-      requestId: req.requestId
-    },
+    meta: { requestId: req.requestId },
     error: {
       code,
-      message
+      message,
+      ...(details && { details })
     }
   });
 }
