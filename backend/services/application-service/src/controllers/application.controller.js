@@ -221,10 +221,16 @@ export const makeDecision = async (req, res, next) => {
 
     await publishEvent('application.status_changed', {
       applicationId: application.applicationId,
+      professionalUserId: application.professionalUserId,
       oldStatus,
       newStatus: application.status,
       decidedBy: userId,
-      reasonCode: parsed.data.reasonCode || null
+      reasonCode: parsed.data.reasonCode || null,
+      // Include data for Professional Service to build profile
+      roleType: application.roleSelection?.roleType,
+      fullName: application.personalDetails?.fullName,
+      yearsExperience: application.experience?.years,
+      specializations: application.experience?.specializations || []
     });
 
     res.status(200).json({

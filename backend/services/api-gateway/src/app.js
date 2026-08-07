@@ -34,6 +34,16 @@ const applicationProxy = createProxyMiddleware({
   changeOrigin: true
 });
 
+const professionalProxy = createProxyMiddleware({
+  target: process.env.PROFESSIONAL_SERVICE_URL,
+  changeOrigin: true
+});
+
+const marketplaceProxy = createProxyMiddleware({
+  target: process.env.MARKETPLACE_SERVICE_URL,
+  changeOrigin: true
+});
+
 // --- ROUTE MOUNTING ---
 // MOUNT PROXIES *BEFORE* BODY PARSERS!
 // This ensures the proxy can forward the raw body stream to downstream services.
@@ -44,6 +54,8 @@ app.use("/api/v1/auth", authProxy);
 // Protected Routes
 app.use("/api/v1/users", verifyToken, userProxy);
 app.use("/api/v1/applications", verifyToken, applicationProxy);
+app.use("/api/v1/professionals", verifyToken, professionalProxy);
+app.use("/api/v1/marketplace", verifyToken, marketplaceProxy);
 
 app.use(express.json({ limit: "1mb" }));
 

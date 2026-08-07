@@ -94,6 +94,42 @@ services:
       timeout: 5s
       retries: 5
 
+  professional-service:
+    build: ./services/professional-service
+    container_name: jeevan108-professional-service
+    restart: unless-stopped
+    env_file:
+      - ./services/professional-service/.env
+    depends_on:
+      mongo:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4004/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  marketplace-service:
+    build: ./services/marketplace-service
+    container_name: jeevan108-marketplace-service
+    restart: unless-stopped
+    env_file:
+      - ./services/marketplace-service/.env
+    depends_on:
+      mongo:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4005/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   mongo:
     image: mongo:7
     container_name: jeevan108-mongo
