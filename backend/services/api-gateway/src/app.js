@@ -29,6 +29,11 @@ const userProxy = createProxyMiddleware({
   changeOrigin: true
 });
 
+const applicationProxy = createProxyMiddleware({
+  target: process.env.APPLICATION_SERVICE_URL,
+  changeOrigin: true
+});
+
 // --- ROUTE MOUNTING ---
 // MOUNT PROXIES *BEFORE* BODY PARSERS!
 // This ensures the proxy can forward the raw body stream to downstream services.
@@ -38,6 +43,7 @@ app.use("/api/v1/auth", authProxy);
 
 // Protected Routes
 app.use("/api/v1/users", verifyToken, userProxy);
+app.use("/api/v1/applications", verifyToken, applicationProxy);
 
 app.use(express.json({ limit: "1mb" }));
 

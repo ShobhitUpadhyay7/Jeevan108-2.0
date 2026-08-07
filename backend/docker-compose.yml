@@ -73,6 +73,27 @@ services:
       timeout: 5s
       retries: 5
 
+  application-service:
+    build:
+      context: ./services/application-service
+      dockerfile: Dockerfile
+    container_name: jeevan108-application-service
+    restart: unless-stopped
+    env_file:
+      - ./services/application-service/.env
+    depends_on:
+      mongo:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "4003:4003"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4003/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   mongo:
     image: mongo:7
     container_name: jeevan108-mongo
@@ -119,3 +140,4 @@ volumes:
   mongo_data:
   redis_data:
   rabbitmq_data:
+  uploads_data:
