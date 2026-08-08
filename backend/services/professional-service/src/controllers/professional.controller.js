@@ -67,6 +67,7 @@ export const updateMyProfile = async (req, res, next) => {
     // Publish update event for Marketplace cache rebuild
     await publishEvent('professional.updated', {
       professionalId: professional.professionalId,
+      userId: professional.userId,
       fullName: professional.fullName,
       roleType: professional.roleType,
       verified: professional.verified,
@@ -119,6 +120,7 @@ export const updateAvailability = async (req, res, next) => {
     // Publish for marketplace cache update
     await publishEvent('professional.updated', {
       professionalId: professional.professionalId,
+      userId: professional.userId,
       fullName: professional.fullName,
       roleType: professional.roleType,
       verified: professional.verified,

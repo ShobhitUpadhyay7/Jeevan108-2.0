@@ -130,6 +130,27 @@ services:
       timeout: 5s
       retries: 5
 
+  booking-service:
+    build: ./services/booking-service
+    container_name: jeevan108-booking-service
+    restart: unless-stopped
+    env_file:
+      - ./services/booking-service/.env
+    depends_on:
+      mongo:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      professional-service:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4006/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   mongo:
     image: mongo:7
     container_name: jeevan108-mongo
