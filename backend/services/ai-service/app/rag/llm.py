@@ -44,6 +44,7 @@ async def generate_answer(context_blocks: list[dict], question: str) -> str:
                     {"role": "user", "content": user_prompt},
                 ],
                 "stream": False,
+                "think": False,  # Disables qwen3's internal reasoning which improves speed
             },
         )
         resp.raise_for_status()
