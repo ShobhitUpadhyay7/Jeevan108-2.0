@@ -168,6 +168,24 @@ services:
       timeout: 5s
       retries: 5
 
+  ai-service:
+    build: ./services/ai-service
+    container_name: jeevan108-ai-service
+    restart: unless-stopped
+    env_file: ./services/ai-service/.env
+    volumes:
+      - chroma_data:/app/chroma_data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
   mongo:
     image: mongo:7
     container_name: jeevan108-mongo
@@ -215,3 +233,4 @@ volumes:
   redis_data:
   rabbitmq_data:
   uploads_data:
+  chroma_data:

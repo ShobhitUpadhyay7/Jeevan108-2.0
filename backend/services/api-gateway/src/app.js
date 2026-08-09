@@ -54,6 +54,11 @@ const notificationProxy = createProxyMiddleware({
   changeOrigin: true
 });
 
+const aiProxy = createProxyMiddleware({
+  target: process.env.AI_SERVICE_URL,
+  changeOrigin: true
+});
+
 // --- ROUTE MOUNTING ---
 // MOUNT PROXIES *BEFORE* BODY PARSERS!
 // This ensures the proxy can forward the raw body stream to downstream services.
@@ -68,6 +73,7 @@ app.use("/api/v1/professionals", verifyToken, professionalProxy);
 app.use("/api/v1/marketplace", verifyToken, marketplaceProxy);
 app.use("/api/v1/bookings", verifyToken, bookingProxy);
 app.use("/api/v1/notifications", verifyToken, notificationProxy);
+app.use("/api/v1/ai", verifyToken, aiProxy);
 
 app.use(express.json({ limit: "1mb" }));
 
