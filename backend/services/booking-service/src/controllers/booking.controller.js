@@ -104,6 +104,8 @@ export const createBooking = async (req, res, next) => {
       bookingId: booking.bookingId,
       patientId: booking.patientId,
       professionalId: booking.professionalId,
+      professionalUserId: professional.userId,
+      shiftType: shiftType,
       startAt: booking.startAt.toISOString(),
       slaExpiresAt: booking.slaExpiresAt.toISOString()
     });
@@ -247,7 +249,9 @@ export const respondToBooking = async (req, res, next) => {
       await publishEvent('booking.confirmed', {
         bookingId: booking.bookingId,
         professionalId: booking.professionalId,
-        patientId: booking.patientId
+        professionalUserId: proCache.userId,
+        patientId: booking.patientId,
+        startAt: booking.startAt.toISOString()
       });
     } else if (parsed.data.action === 'decline') {
       booking.status = 'declined';
@@ -303,6 +307,7 @@ export const cancelBooking = async (req, res, next) => {
 
     await publishEvent('booking.cancelled', {
       bookingId: booking.bookingId,
+      professionalUserId: proCache ? proCache.userId : null,
       cancelledBy: userId,
       reason: parsed.data.reason || 'Cancelled by user'
     });
@@ -387,6 +392,7 @@ export const reviewBooking = async (req, res, next) => {
       reviewId,
       bookingId: booking.bookingId,
       professionalId: booking.professionalId,
+      professionalUserId: proCache ? proCache.userId : null,
       patientId: userId,
       rating: parsed.data.rating,
       comment: parsed.data.comment
