@@ -47,8 +47,5 @@ Initial implementation used REST between Booking → Professional to fetch prici
 **Why Redis-backed sliding-window rate limiting?**
 A fixed-window counter creates boundary-burst vulnerabilities. A sliding window using Redis sorted sets + atomic Lua scripts eliminates race conditions across multiple Gateway replicas.
 
-**Why HMAC for internal service calls?**
-Per [ADD §13](./docs/ADD.md), internal endpoints use `X-Internal-Auth` HMAC headers rather than JWT. This is cheaper than JWT verification and explicitly marks service-to-service boundaries.
-
 **Why RAG with citations instead of direct LLM?**
 Medical misinformation has real consequences. The AI Service is architected so that every answer is grounded in an admin-curated knowledge base, with inline citations the user can audit.
