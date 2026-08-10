@@ -69,7 +69,7 @@ export const API_ENDPOINTS = {
     QUERY_STREAM: { method: 'POST', path: '/api/v1/ai/query/stream', description: 'Stream AI Knowledge Assistant response token-by-token' },
   },
   ADMIN: {
-    DASHBOARD: { method: 'GET', path: '/api/v1/admin/dashboard', description: 'Access Admin Dashboard metrics (Admin role required)' },
+    DASHBOARD: { method: 'GET', path: '/api/v1/dashboard/admin', description: 'Access Admin Dashboard metrics (Admin role required)' },
   },
   HEALTH: {
     GATEWAY: { method: 'GET', path: '/health', description: 'API Gateway health status' },
