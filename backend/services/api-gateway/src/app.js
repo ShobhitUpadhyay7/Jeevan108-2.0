@@ -17,6 +17,8 @@ import {
   uploadLimiter,
 } from './middleware/rateLimiter.js';
 
+import dashboardRouter from "./routes/dashboard.routes.js";
+
 const app = express();
 
 app.use((req, res, next) => {
@@ -98,19 +100,7 @@ app.use('/api/v1/ai', verifyToken, aiLimiter, aiProxy);
 
 app.use(express.json({ limit: "1mb" }));
 
-// Example of an Admin-only route (we will just return a mock response for now)
-app.get(
-  "/api/v1/admin/dashboard",
-  verifyToken,
-  requireRole("admin"),
-  (req, res) => {
-    res.json({
-      data: { message: "Welcome to the Admin Dashboard" },
-      meta: { requestId: req.requestId },
-      error: null,
-    });
-  },
-);
+app.use("/api/v1/dashboard", verifyToken, dashboardRouter);
 
 // Health & Fallback
 app.get("/health", (req, res) => {

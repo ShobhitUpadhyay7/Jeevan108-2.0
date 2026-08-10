@@ -2,6 +2,7 @@ import express from 'express';
 import crypto from 'node:crypto';
 import bookingRouter from './routes/booking.routes.js';
 import { notFoundMiddleware, errorMiddleware } from './middleware/error.middleware.js';
+import internalRouter from './routes/internal.routes.js';
 
 const app = express();
 app.use(express.json({ limit: '1mb' }));
@@ -21,6 +22,8 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/', bookingRouter);
+
+app.use('/internal/v1/bookings', internalRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);

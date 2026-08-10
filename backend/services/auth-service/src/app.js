@@ -1,6 +1,6 @@
 import express from 'express';
 import crypto from 'node:crypto';
-
+import internalRouter from './routes/internal.routes.js';
 import healthRouter from './routes/health.routes.js';
 import authRouter from './routes/auth.routes.js';
 import {
@@ -34,6 +34,11 @@ app.get('/health', (req, res) => {
 
 app.use('/', authRouter);
 app.use('/health', healthRouter);
+
+// INTERNAL routes (HMAC-authenticated, NEVER proxied through public Gateway)
+// Internal APIs versioned independently at /internal/v1/...
+// Protected by X-Internal-Auth HMAC, not JWT
+app.use('/internal/v1/auth', internalRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);

@@ -1,6 +1,7 @@
 import express from 'express';
 import crypto from 'node:crypto';
 import notificationRouter from './routes/notification.routes.js';
+import internalRouter from "./routes/internal.routes.js";
 import { notFoundMiddleware, errorMiddleware } from './middleware/error.middleware.js';
 
 const app = express();
@@ -21,6 +22,8 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/', notificationRouter);
+
+app.use('/internal/v1/notifications', internalRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
