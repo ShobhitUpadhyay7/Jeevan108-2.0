@@ -9,6 +9,14 @@ import {
   errorMiddleware,
 } from "./middleware/error.middleware.js";
 
+import {
+  authLimiter,
+  publicLimiter,
+  generalLimiter,
+  aiLimiter,
+  uploadLimiter,
+} from './middleware/rateLimiter.js';
+
 const app = express();
 
 app.use((req, res, next) => {
@@ -63,17 +71,30 @@ const aiProxy = createProxyMiddleware({
 // MOUNT PROXIES *BEFORE* BODY PARSERS!
 // This ensures the proxy can forward the raw body stream to downstream services.
 
-// Public Routes
-app.use("/api/v1/auth", authProxy);
+// ---- Auth: strict brute-force protection (5 / 15 min per IP) ----
+app.use('/api/v1/auth', authLimiter, authProxy);
 
-// Protected Routes
-app.use("/api/v1/users", verifyToken, userProxy);
-app.use("/api/v1/applications", verifyToken, applicationProxy);
-app.use("/api/v1/professionals", verifyToken, professionalProxy);
-app.use("/api/v1/marketplace", verifyToken, marketplaceProxy);
-app.use("/api/v1/bookings", verifyToken, bookingProxy);
-app.use("/api/v1/notifications", verifyToken, notificationProxy);
-app.use("/api/v1/ai", verifyToken, aiProxy);
+// Protected Routes, Then general per-user limit ---- 
+app.use("/api/v1/users", verifyToken, generalLimiter, userProxy);
+app.use("/api/v1/professionals", verifyToken, generalLimiter, professionalProxy);
+app.use("/api/v1/marketplace", verifyToken, generalLimiter, marketplaceProxy);
+app.use("/api/v1/bookings", verifyToken, generalLimiter, bookingProxy);
+app.use("/api/v1/notifications", verifyToken, generalLimiter, notificationProxy);
+
+// ---- Applications: general limit + stricter upload limit on /documents ----
+const uploadAwareLimiter = (req, res, next) => {
+  // req.path is relative to the mount point here
+  if (req.path.includes('/documents')) {
+    return uploadLimiter(req, res, next);
+  }
+  next();
+};
+
+app.use('/api/v1/applications', verifyToken, uploadAwareLimiter, generalLimiter, applicationProxy);
+
+// ---- AI: stricter per-user limit to protect LLM/vector resources ----
+app.use('/api/v1/ai', verifyToken, aiLimiter, aiProxy);
+
 
 app.use(express.json({ limit: "1mb" }));
 
